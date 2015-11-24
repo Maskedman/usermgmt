@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# --------------------------------
+# David Rancourt Jr.
+# Copyright (C) 2015
+# GPL v3
+#
+# script usage:
+# useradd.sh username "First Last" grouplevel
+# --------------------------------
+
+
 if [ "$(id -u)" != "0" ]; then
    echo "Are you sudo? You need to be sudo to run this command."
    exit 1

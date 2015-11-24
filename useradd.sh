@@ -86,11 +86,11 @@ fi
 echo "Adding user to specified groups..."
 #for GROUP in $grouplevel; do
 if [ $grouplevel = admin ]; then
-      dseditgroup -o edit -t user -a "$username" "$default_admin_groups"
-   elif [ $grouplevel = staff ]; then
-      dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
-   else
-      dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
+   dseditgroup -o edit -t user -a "$username" "$default_admin_groups"
+elif [ $grouplevel = staff ]; then
+   dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
+else
+   dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
 fi
 #done
 

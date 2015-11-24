@@ -9,7 +9,11 @@
 # useradd.sh username "First Last" grouplevel
 # --------------------------------
 
+# you may edit the following items to fit your environment
+default_staff_groups="staff"
+default_admin_groups="admin wheel brew"
 
+# do not edit below this line unless you want to add functionality
 
 if [ "$(id -u)" != "0" ]; then
    echo "Are you sudo? You need to be sudo to run this command."
@@ -39,11 +43,11 @@ password=$( cat < /dev/urandom | env LC_CTYPE=C tr -dc '`a-zA-Z0-9\<>!.$%&/()=?|
 
 
 if [ "$grouplevel" = 'staff' ]; then
-   GROUP_LVL="staff" # for non-admin user add to staff group
+   GROUP_LVL=$default_staff_groups # for non-admin user add to staff group
 elif [ "$grouplevel" = 'admin' ]; then
-   GROUP_LVL="admin wheel brew" # for admin user
+   GROUP_LVL=$default_admin_groups # for admin user
 else
-   GROUP_LVL="staff" # default setting
+   GROUP_LVL=$default_staff_groups # default setting
 fi
 
 #-- check OS X Ver.

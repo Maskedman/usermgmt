@@ -11,7 +11,7 @@
 
 # you may edit the following items to fit your environment
 default_staff_groups="staff"
-default_admin_groups="admin wheel brew_users"
+default_admin_groups="admin wheel brew"
 
 # do not edit below this line unless you want to add functionality
 

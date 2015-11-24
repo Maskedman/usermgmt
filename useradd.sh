@@ -25,6 +25,7 @@ fi
 [ $# -eq 3 ] && { echo "Usage: useradd.sh username fullname-in-quotes"; exit 1; }
 username=$1
 fullname=$2
+grouplevel=$3
 
 password=$( cat < /dev/urandom | env LC_CTYPE=C tr -dc '`a-zA-Z0-9\<>!.$%&/()=?|@#[]{}-_,`' | head -c 16)
 
@@ -33,12 +34,13 @@ password=$( cat < /dev/urandom | env LC_CTYPE=C tr -dc '`a-zA-Z0-9\<>!.$%&/()=?|
 #}
 
 
-echo "Does this user need Elevated Privs? [y/(N)]"
-read -r "GROUP_ADD"
+#echo "Does this user need Elevated Privs? [y/(N)]"
+#read -r "GROUP_ADD"
 
-if [ "$GROUP_ADD" = n ]; then
+
+if [ "$grouplevel" = 'staff' ]; then
    GROUP_LVL="staff" # for non-admin user add to staff group
-elif [ "$GROUP_ADD" = y ]; then
+elif [ "$grouplevel" = 'admin' ]; then
    GROUP_LVL="admin wheel brew" # for admin user
 else
    GROUP_LVL="staff" # default setting

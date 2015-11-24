@@ -1,19 +1,30 @@
 #!/bin/sh
 
+# --------------------------------
+# David Rancourt Jr.
+# Copyright (C) 2015
+# GPL v3
+#
+# script usage:
+# useradd.sh username "First Last" grouplevel
+# --------------------------------
+
+
+
 if [ "$(id -u)" != "0" ]; then
    echo "Are you sudo? You need to be sudo to run this command."
    exit 1
 fi
 
-echo "Enter user name (no spaces): "
-read -r username
+#echo "Enter user name (no spaces): "
+#read -r username
 
-echo "Enter user's full name (first last): "
-read -r fullname
+#echo "Enter user's full name (first last): "
+#read -r fullname
 
-#[ $# -eq 3 ] && { echo "Usage: useradd.sh username fullname-in-quotes"; exit 1; }
-#username=$1
-#fullname=$2
+[ $# -eq 3 ] && { echo "Usage: useradd.sh username fullname-in-quotes"; exit 1; }
+username=$1
+fullname=$2
 
 password=$( cat < /dev/urandom | env LC_CTYPE=C tr -dc '`a-zA-Z0-9\<>!.$%&/()=?|@#[]{}-_,`' | head -c 16)
 

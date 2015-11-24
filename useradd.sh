@@ -10,8 +10,8 @@
 # --------------------------------
 
 # you may edit the following items to fit your environment
-default_staff_groups="staff"
-default_admin_groups="admin wheel brew"
+default_staff_groups=('staff')
+default_admin_groups=('admin' 'wheel' '502')
 
 # do not edit below this line unless you want to add functionality
 
@@ -42,19 +42,19 @@ password=$( cat < /dev/urandom | env LC_CTYPE=C tr -dc '`a-zA-Z0-9\<>!.$%&/()=?|
 #read -r "GROUP_ADD"
 
 
-#if [ "$grouplevel" = staff ]; then
-#   for GRP_STAFF in "${default_staff_groups[@]}"; do
-#      GROUP_LVL=$GRP_STAFF # for non-admin user add to staff group
-#   done
-#elif [ "$grouplevel" = admin ]; then
-#   for GRP_ADM in "${default_admin_groups[@]}"; do
-#      GROUP_LVL=$GRP_ADM # for admin user
-#   done
-#else
-#   for GRP_DEF in "${default_staff_groups[@]}"; do
-#      GROUP_LVL=$GRP_DEF # default setting
-#   done
-#fi
+if [ "$grouplevel" = staff ]; then
+   for GRP_STAFF in ${#default_staff_groups[@]}; do
+      GROUP_LVL=$GRP_STAFF # for non-admin user add to staff group
+   done
+elif [ "$grouplevel" = admin ]; then
+   for GRP_ADM in ${#default_admin_groups[@]}; do
+      GROUP_LVL=$GRP_ADM # for admin user
+   done
+else
+   for GRP_DEF in ${#default_staff_groups[@]}; do
+      GROUP_LVL=$GRP_DEF # default setting
+   done
+fi
 
 #-- check OS X Ver.
 
@@ -66,10 +66,10 @@ MAXID=$(dscl . -list /Users UniqueID | awk '{Print $2}' | sort -ug | tail -1)
 USRID=$((MAXID+1))
 
 #if 10.10+ run sysadminctl instead of dscl
-if [ $OSXVER -ge "10" ]; then
+if [ "$OSXVER" -ge "10" ]; then
    echo "Current System ver is OS X 10.10 or 10.11, using sysadminctl..."
    sysadminctl -addUser "$username" -fullName "$fullname" UID="$USRID" -password "$password"
-elif [ $OSXVER -ge "7" ]; then  # if OSX Ver is Lion - Mavericks then use dscl
+elif [ "$OSXVER" -ge "7" ]; then  # if OSX Ver is Lion - Mavericks then use dscl
    echo "Current System ver is between 10.7 and 10.9, using dscl..."
    dscl . -create /Users/"$username"
    dscl . -create /Users/"$username" UserShell /bin/bash
@@ -84,15 +84,15 @@ elif [ $OSXVER -ge "7" ]; then  # if OSX Ver is Lion - Mavericks then use dscl
 fi
 
 echo "Adding user to specified groups..."
-#for GROUP in $grouplevel; do
-if [ $grouplevel = admin ]; then
-   dseditgroup -o edit -t user -a "$username" "$default_admin_groups"
-elif [ $grouplevel = staff ]; then
-   dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
-else
-   dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
-fi
-#done
+for GROUP in $GROUP_LVL; do
+#if [ "$grouplevel" = admin ]; then
+   dseditgroup -o edit -t user -a "$username" "$GROUP"
+#elif [ "$grouplevel" = staff ]; then
+#   dseditgroup -o edit -t user -a "$username" "$GROUP"
+#else
+#   dseditgroup -o edit -t user -a "$username" "$GROUP"
+#fi
+done
 
 echo "Created user $USRID: $username ($fullname) passwd: $password"
 

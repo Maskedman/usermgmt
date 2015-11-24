@@ -11,7 +11,7 @@
 
 # you may edit the following items to fit your environment
 default_staff_groups="staff"
-default_admin_groups="admin wheel brew"
+default_admin_groups="admin wheel brew_users"
 
 # do not edit below this line unless you want to add functionality
 
@@ -26,7 +26,7 @@ fi
 #echo "Enter user's full name (first last): "
 #read -r fullname
 
-[ $# -eq 3 ] && { echo "Usage: useradd.sh username fullname-in-quotes"; exit 1; }
+[ $# -eq 4 ] && { echo "Usage: useradd.sh username fullname-in-quotes grouplevel"; exit 1; }
 username=$1
 fullname=$2
 grouplevel=$3
@@ -42,13 +42,19 @@ password=$( cat < /dev/urandom | env LC_CTYPE=C tr -dc '`a-zA-Z0-9\<>!.$%&/()=?|
 #read -r "GROUP_ADD"
 
 
-if [ "$grouplevel" = 'staff' ]; then
-   GROUP_LVL=$default_staff_groups # for non-admin user add to staff group
-elif [ "$grouplevel" = 'admin' ]; then
-   GROUP_LVL=$default_admin_groups # for admin user
-else
-   GROUP_LVL=$default_staff_groups # default setting
-fi
+#if [ "$grouplevel" = staff ]; then
+#   for GRP_STAFF in "${default_staff_groups[@]}"; do
+#      GROUP_LVL=$GRP_STAFF # for non-admin user add to staff group
+#   done
+#elif [ "$grouplevel" = admin ]; then
+#   for GRP_ADM in "${default_admin_groups[@]}"; do
+#      GROUP_LVL=$GRP_ADM # for admin user
+#   done
+#else
+#   for GRP_DEF in "${default_staff_groups[@]}"; do
+#      GROUP_LVL=$GRP_DEF # default setting
+#   done
+#fi
 
 #-- check OS X Ver.
 
@@ -78,9 +84,15 @@ elif [ $OSXVER -ge "7" ]; then  # if OSX Ver is Lion - Mavericks then use dscl
 fi
 
 echo "Adding user to specified groups..."
-for GROUP in $GROUP_LVL; do
-   dseditgroup -o edit -t user -a "$username" "$GROUP"
-done
+#for GROUP in $grouplevel; do
+if [ $grouplevel = admin ]; then
+      dseditgroup -o edit -t user -a "$username" "$default_admin_groups"
+   elif [ $grouplevel = staff ]; then
+      dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
+   else
+      dseditgroup -o edit -t user -a "$username" "$default_staff_groups"
+fi
+#done
 
 echo "Created user $USRID: $username ($fullname) passwd: $password"
 

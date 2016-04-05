@@ -68,7 +68,9 @@ USRID=$((MAXID+1))
 #if 10.10+ run sysadminctl instead of dscl
 if [ "$OSXVER" -ge "10" ]; then
    echo "Current System ver is OS X 10.10 or 10.11, using sysadminctl..."
-   sysadminctl -addUser "$username" -fullName "$fullname" UID="$USRID" -password "$password"
+   sysadminctl -addUser "$username" -fullName "$fullname" -UID="$USRID" -password "$password" -home /Users/"$username"
+   mkdir /Users/"$username"
+   chown -R "$username":staff /Users/"$username"
 elif [ "$OSXVER" -ge "7" ]; then  # if OSX Ver is Lion - Mavericks then use dscl
    echo "Current System ver is between 10.7 and 10.9, using dscl..."
    dscl . -create /Users/"$username"
